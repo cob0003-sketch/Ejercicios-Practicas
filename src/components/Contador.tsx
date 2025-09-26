@@ -1,22 +1,32 @@
 import { useState } from "react"
 
+export type ContadorPropsType = {
+    contador: number
+}
+
+const initialState: ContadorPropsType = {
+    contador: 0
+}
+
 export default function Contador() {
 
-    const [contador, setContador] = useState<number>(0)
+    const [state, setState] = useState<ContadorPropsType>(initialState)
 
     const incremetar = () => {
-        setContador(contador + 1)
+        setState((prev) => ({
+            contador: prev.contador + 1
+        }))
     }
 
     const decrementar = () => {
-        setContador((prev)=> 
-        Math.max(prev - 1, 0) //
-        )
+       setState((prev)=> ({
+        contador: Math.max(prev.contador -1, 0)
+       }))
     }
 
     return (
         <div className="container-contador">
-            <h2>{contador}</h2>
+            <h2>{state.contador}</h2>
 
             <button
                 type="button"
