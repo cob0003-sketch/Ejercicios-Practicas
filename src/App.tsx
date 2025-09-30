@@ -106,6 +106,7 @@ function App() {
 
             <div className="section">
               <h2>Tabla Resultados</h2>
+              {persons.length > 0 ?
               <table className="table">
                 <thead className="thead">
                   <tr>
@@ -132,7 +133,9 @@ function App() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </table> : <p style={{fontSize:"1.8rem", textAlign:"center"}}>No hay registros para mostrar</p>
+            }
+              
             </div>
         </section>
       </main>
