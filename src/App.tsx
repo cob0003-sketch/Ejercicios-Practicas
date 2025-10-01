@@ -1,36 +1,31 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Contador from "./components/Contador"
 import Header from "./components/Header"
+import { useStoreApp } from "./store/useStore"
+import type { Person } from "./types/index"
+import { motion, AnimatePresence } from "framer-motion";
 
-export type Person = {
-  nombre: string
-  apellido: string
-}
 
-const initialPerson = {
+
+// type Person = {
+//   nombre: string
+//   apellido: string
+// }
+
+const initialPerson: Person = {
   nombre: '',
   apellido: ''
 }
 
-export type Persons = Person[]
-
 
 function App() {
   //! State
-  const [persons, setPersons] = useState<Persons>([])
+  // const [persons, setPersons] = useState<Persons>([])
   const [person, setPerson] = useState<Person>(initialPerson)
-
- //!local storage
- useEffect(()=>{
-  localStorage.setItem('persons', JSON.stringify(persons))
- }, [persons])
-
- useEffect(()=> {
-  const result = localStorage.getItem('persons')
-  if(result) {
-    setPersons(JSON.parse(result)) 
-  }
- }, [])
+  const persons = useStoreApp((state) => state.persons)
+  const addPerson = useStoreApp((state) => state.addPerson)
+  const deletePerson = useStoreApp((state) => state.deletePerson)
+ 
 
 
   //! Funciones para manejar el formulario
@@ -39,7 +34,8 @@ function App() {
     if (person.nombre.trim() === '' || person.apellido.trim() === '') {
       console.log('Rellena todos los campos')
     } else {
-      setPersons((prev) => [...prev, person])
+      // setPersons((prev) => [...prev, person])
+      addPerson(person)
       setPerson(initialPerson)
     }
   }
@@ -50,13 +46,6 @@ function App() {
       ...prev,
       [name]: value
     }))
-  }
-
-  const deletePerson = (person:Person)=> {
-    //! Seria mas facil y más seguro con un id p.id !== person.id
-    const filterclear = persons.filter(p => !(p.nombre === person.nombre && p.apellido === person.apellido))
-    //! el metodo filter ya crea una copia por eso se puede poner directamente sin callback ni prev
-    setPersons(filterclear)
   }
 
   return (
@@ -104,39 +93,59 @@ function App() {
             </form>
           </div>
 
-            <div className="section">
-              <h2>Tabla Resultados</h2>
-              {persons.length > 0 ?
+          <div className="section">
+
+            <h2>Tabla Resultados</h2>
+            {persons.length > 0 ?
               <table className="table">
                 <thead className="thead">
                   <tr>
-                  <th>Nombre</th>
-                  <th>Apellido</th>
-                  <th>Borrar</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Borrar</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {persons.map(person => (
-                    <tr key={person.nombre + person.apellido}>
-                      <td>
-                        {person.nombre}
-                      </td>
-                      <td>
-                        {person.apellido}
-                      </td>
-                      <td>
-                        <button
-                         type="button"
-                         className="btn-borrar"
-                         onClick={()=> deletePerson(person)}>X</button>
-                      </td>
-                    </tr>
-                  ))}
+                  <AnimatePresence>
+                    {persons.map(person => (
+                      <motion.tr
+                        key={person.nombre + person.apellido}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{
+                          duration: 0.4,
+                          ease: "easeInOut"
+                        }}>
+                        <td>
+                          {person.nombre}
+                        </td>
+                        <td>
+                          {person.apellido}
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className="btn-borrar"
+                            onClick={() => deletePerson(person)}>X</button>
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </AnimatePresence>
                 </tbody>
-              </table> : <p style={{fontSize:"1.8rem", textAlign:"center"}}>No hay registros para mostrar</p>
+              </table> :
+              <AnimatePresence>
+                <motion.p
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, ease: "linear" }}
+                  style={{ fontSize: "1.8rem", textAlign: "center" }}
+                >
+                  No hay registros para mostrar</motion.p>
+              </AnimatePresence>
             }
-              
-            </div>
+
+          </div>
         </section>
       </main>
     </>
