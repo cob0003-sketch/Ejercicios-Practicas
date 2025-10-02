@@ -14,9 +14,17 @@ export const useStoreApp = create<useStoreAppType>()(
             (set) => ({
                 persons: [],
                 addPerson: (persona) => {
-                    set((state) => ({
-                        persons: [...state.persons, persona],
-                    }))
+                    //! Poner state por que el valor depende del state anterior
+                    set((state) => {
+                        const existe = state.persons.some(p => p.nombre === persona.nombre && p.apellido === persona.apellido)
+                        if (existe) {
+                            return state
+                        } else {
+                            return {
+                                persons: [...state.persons, persona]
+                            }
+                        }
+                    })
                 },
                 deletePerson: (persona) => {
                     set((state) => ({

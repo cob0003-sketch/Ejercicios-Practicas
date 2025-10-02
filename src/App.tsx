@@ -19,14 +19,15 @@ const initialPerson: Person = {
 
 
 function App() {
+
   //! State
   // const [persons, setPersons] = useState<Persons>([])
   const [person, setPerson] = useState<Person>(initialPerson)
+
+  //! estados y funciones del useStore
   const persons = useStoreApp((state) => state.persons)
   const addPerson = useStoreApp((state) => state.addPerson)
   const deletePerson = useStoreApp((state) => state.deletePerson)
- 
-
 
   //! Funciones para manejar el formulario
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -34,7 +35,6 @@ function App() {
     if (person.nombre.trim() === '' || person.apellido.trim() === '') {
       console.log('Rellena todos los campos')
     } else {
-      // setPersons((prev) => [...prev, person])
       addPerson(person)
       setPerson(initialPerson)
     }
