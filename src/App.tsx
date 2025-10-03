@@ -1,9 +1,10 @@
 import { useState } from "react"
+import { useAppStore } from "./store/useAppStore"
 import Contador from "./components/Contador"
 import Header from "./components/Header"
-import { useStoreApp } from "./store/useStore"
 import type { Person } from "./types/index"
 import { motion, AnimatePresence } from "framer-motion";
+
 
 
 
@@ -25,9 +26,9 @@ function App() {
   const [person, setPerson] = useState<Person>(initialPerson)
 
   //! estados y funciones del useStore
-  const persons = useStoreApp((state) => state.persons)
-  const addPerson = useStoreApp((state) => state.addPerson)
-  const deletePerson = useStoreApp((state) => state.deletePerson)
+  const persons = useAppStore((state) => state.persons)
+  const addPerson = useAppStore((state) => state.addPerson)
+  const deletePerson = useAppStore((state) => state.deletePerson)
 
   //! Funciones para manejar el formulario
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
